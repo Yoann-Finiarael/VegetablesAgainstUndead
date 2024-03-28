@@ -1,12 +1,21 @@
-using UnityEngine;
-
-public abstract class Interactable : MonoBehaviour
+/// <summary>
+/// Abstract class representing all the elements the Player can interact with
+/// </summary>
+public interface Interactable
 {
-    [field: SerializeField]
-    public string InteractText { get; private set; }
+    /// <summary>
+    /// Text displayed to the player
+    /// </summary>
+    public string InteractText { get; }
 
-    [field: SerializeField]
-    public bool IsInteractable { get; private set; }
+    /// <summary>
+    /// If the player can or not interact with the object
+    /// </summary>
+    public bool IsInteractable { get; }
 
+    /// <summary>
+    /// Called when the player interacts with the object
+    /// </summary>
+    /// <param name="main"></param>
     public abstract void OnInteract(PlayerMain main);
 }

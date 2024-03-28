@@ -12,10 +12,10 @@ public class PlayerCamera : MonoBehaviour
     [SerializeField]
     private Transform _cameraRoot;
 
-    //Main
+    // Main
     private PlayerMain _main;
 
-    //Local variable replacement
+    // Local Use
     private Vector2 rotation;
 
     private void Start()
@@ -23,14 +23,15 @@ public class PlayerCamera : MonoBehaviour
         _main = GetComponent<PlayerMain>();
     }
 
-
     // Update is called once per frame
-    void Update()
+    private void LateUpdate()
     {
-        _cameraObject.transform.position = _cameraRoot.transform.position;
+        // _cameraObject.transform.position = _cameraRoot.transform.position;
+        _cameraObject.transform.localRotation = Quaternion.Euler(rotation.x, 0, 0);
+        transform.rotation = Quaternion.Euler(0, rotation.y, 0);
     }
 
-    //Inspired from video : https://www.youtube.com/watch?v=f473C43s8nE
+    // Inspired from video : https://www.youtube.com/watch?v=f473C43s8nE
     /// <summary>
     /// Updates the rotation of the camera and the player from the delta mouvement of the mouse
     /// </summary>
@@ -39,8 +40,5 @@ public class PlayerCamera : MonoBehaviour
     {
         rotation.y += movement.x * Time.deltaTime * _cameraSensitivity.x;
         rotation.x = Mathf.Clamp(rotation.x -= movement.y * Time.deltaTime * _cameraSensitivity.y, -90f, 90f);
-
-        _cameraObject.transform.rotation = Quaternion.Euler(rotation.x, rotation.y, 0);
-        transform.rotation = Quaternion.Euler(0, rotation.y, 0);
     }
 }

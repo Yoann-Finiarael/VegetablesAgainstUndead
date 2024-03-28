@@ -5,21 +5,21 @@ public class PlayerInteract : MonoBehaviour
     [SerializeField]
     private float _interactRange = 50f;
 
-    //Main 
+    // Main
     private PlayerMain _main;
 
-    //For Raycast
+    // For Raycast
     private Camera _camera;
 
     private RaycastHit _hit;
     private LayerMask _layerInteractable;
 
-    //Private
+    // Local Use
     private Interactable _currentInteract;
     private Interactable _hitInteractable;
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         _camera = Camera.main;
         _main = GetComponent<PlayerMain>();
@@ -27,25 +27,44 @@ public class PlayerInteract : MonoBehaviour
         _layerInteractable = LayerMask.GetMask("Interactable");
     }
 
+    private void Update()
+    {
+        InteractUpdate();
+    }
+
     /// <summary>
     /// Detects what's in front of the player. If the element is interactable, register it.
     /// </summary>
     public void InteractUpdate()
     {
-        if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out _hit, _interactRange, _layerInteractable))   //If an Interactable has been hit
+        // If an Interactable has been hit
+        if (Physics.Raycast(_camera.transform.position, _camera.transform.forward, out _hit, _interactRange, _layerInteractable))
         {
             _hitInteractable = _hit.transform.GetComponent<Interactable>();
 
-            if (_currentInteract != _hitInteractable)
+            // If the Interactable can be interacted with
+            if (_hitInteractable.IsInteractable)
+            {
+                // If the Interactable is a different Interactable -> Update stuff
+                if (_currentInteract != _hitInteractable)
+                {
+                    InteractEnd();
+
+                    _currentInteract = _hitInteractable;
+
+                    InteractBegin();
+                }
+            }
+            else
             {
                 InteractEnd();
 
-                _currentInteract = _hitInteractable;
-
-                InteractBegin();
+                _currentInteract = null;
             }
         }
-        else    //If no Interactables have been hit
+
+        // If no Interactables have been hit
+        else
         {
             InteractEnd();
 
@@ -58,14 +77,14 @@ public class PlayerInteract : MonoBehaviour
     /// </summary>
     public void Interact()
     {
-        if (_currentInteract != null)
+        if (_currentInteract != null && _currentInteract.IsInteractable)
         {
-            Debug.Log("I interact with " + _currentInteract.name);
+            _currentInteract.OnInteract(_main);
         }
     }
 
     /// <summary>
-    /// Prepares the player's interaction with the current interactable 
+    /// Prepares the player's interaction with the current interactable
     /// </summary>
     private void InteractBegin()
     {

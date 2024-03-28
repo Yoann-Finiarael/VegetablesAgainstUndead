@@ -1,6 +1,6 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/CardData", order = 1)]
+[CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/Seed", order = 1)]
 public class SeedData : ScriptableObject
 {
     [field: SerializeField]
@@ -8,4 +8,8 @@ public class SeedData : ScriptableObject
 
     [field: SerializeField]
     public int Cost { get; private set; }
+
+    [field: Header("Prefab")]
+    [field: SerializeField]
+    public GameObject Plant { get; private set; }
 }

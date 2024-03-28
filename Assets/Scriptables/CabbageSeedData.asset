@@ -9,10 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 48e579a16438de04887ba1e36838eb9a, type: 3}
-  m_Name: SaladData
+  m_Script: {fileID: 11500000, guid: bc5cd0e2dd5c3c945b748dc08c13990d, type: 3}
+  m_Name: CabbageSeedData
   m_EditorClassIdentifier: 
-  <Name>k__BackingField: Salad
-  <GrowTime>k__BackingField: 2
-  <SellValue>k__BackingField: 10
-  <PlantPrefab>k__BackingField: {fileID: 0}
+  <Name>k__BackingField: Cabbage seeds
+  <Cost>k__BackingField: 5
+  <Plant>k__BackingField: {fileID: 6809036217236357563, guid: 241836f799a6ecc4d9958786f8dd4c7f,
+    type: 3}

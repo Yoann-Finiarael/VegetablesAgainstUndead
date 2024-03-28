@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: CarrotSeedData
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Carrot seeds
-  <Cost>k__BackingField: 0
+  <Cost>k__BackingField: 10
+  <Plant>k__BackingField: {fileID: 3925494655990518963, guid: b01c4ded569ad0d418e46b0e8c167f74,
+    type: 3}

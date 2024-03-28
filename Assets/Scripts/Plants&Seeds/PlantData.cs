@@ -12,8 +12,4 @@ public class PlantData : ScriptableObject
 
     [field:SerializeField]
     public int SellValue { get; private set; }
-
-    [field: Header("Prefab")]
-    [field: SerializeField]
-    public GameObject PlantPrefab { get; private set; }
 }

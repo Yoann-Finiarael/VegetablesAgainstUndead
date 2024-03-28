@@ -41,8 +41,12 @@ public class LandPlot : MonoBehaviour, Interactable
     /// <param name="seed"></param>
     private void PlantSeed(SeedData seed)
     {
-        _plant = Instantiate(seed.Plant, transform.GetChild(0).position, Quaternion.identity).GetComponent<Plant>();
+        _plant = ObjectPool.Instance.Get(seed.Plant).GetComponent<Plant>();
+
         _plant.SetPlot(this);
+
+        // Give the position of the top of the land plot
+        _plant.Use(transform.GetChild(0).position);
     }
 
     /// <summary>

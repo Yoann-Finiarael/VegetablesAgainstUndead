@@ -1,35 +1,104 @@
 using System.Collections;
 using UnityEngine;
 
-public class Plant : MonoBehaviour, Interactable
+public class Plant : MonoBehaviour, Interactable, IPoolable
 {
-    [field: Header("Interactable")]
-    [field: SerializeField]
+    [field: Header("ScriptableObject")]
+
+    [SerializeField]
+    private PlantData _data;
+
+    // Interactable
     public string InteractText { get; private set; }
 
-    [field: SerializeField]
     public bool IsInteractable { get; private set; }
 
-    [field: Header("PlantStats")]
-    [field: SerializeField]
+    //IPoolable
+    public bool InUse { get; private set; }
+
+    // PlantStats
     public string Name { get; private set; }
 
-    [field: SerializeField]
     public float GrowTime { get; private set; }
 
-    [field: SerializeField]
     public int SellValue { get; private set; }
-
 
     private LandPlot _plot;
 
-    // Start is called before the first frame update
-    private void Start()
+    /// <summary>
+    /// Sets the plant's current plot
+    /// </summary>
+    /// <param name="plot"></param>
+    public void SetPlot(LandPlot plot)
     {
+        _plot = plot;
+    }
+
+    /// <summary>
+    /// The player harvests and sells the plant. Free the plant from its plot. Unuses the plant
+    /// </summary>
+    /// <param name="main"></param>
+    public void OnInteract(PlayerMain main)
+    {
+        main.Money.GainMoney(SellValue);
+        _plot.FreePlot();
+
+        Unuse();
+    }
+
+    /// <summary>
+    /// Uses the plant
+    /// </summary>
+    /// <param name="position"></param>
+    public void Use(Vector3 position)
+    {
+        if (Name != _data.Name)
+        {
+            LoadData();
+        }
+
+        transform.position = position;
+        InUse = true;
+
         StartCoroutine(StartGrowth());
     }
 
-    public IEnumerator StartGrowth()
+    /// <summary>
+    /// Unuses the plant
+    /// </summary>
+    public void Unuse()
+    {
+        transform.position = ObjectPool.Instance.transform.position;
+
+        InUse = false;
+    }
+
+    /// <summary>
+    /// Returns the plant's GameObject
+    /// </summary>
+    /// <returns></returns>
+    public GameObject GetGameObject()
+    {
+        return this.gameObject;
+    }
+
+    /// <summary>
+    /// Hydrates the prefab from the Scriptable's Data
+    /// </summary>
+    private void LoadData()
+    {
+        Name = _data.Name;
+        GrowTime = _data.GrowTime;
+        SellValue = _data.SellValue;
+
+        InteractText = "Haverst " + Name;
+    }
+
+    /// <summary>
+    /// Grows the plant after a set amount of time. The plant then becomes Interactable
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator StartGrowth()
     {
         transform.localScale = Vector3.one * 0.4f;
         IsInteractable = false;
@@ -38,18 +107,5 @@ public class Plant : MonoBehaviour, Interactable
 
         transform.localScale = Vector3.one;
         IsInteractable = true;
-    }
-
-    public void SetPlot(LandPlot plot)
-    {
-        _plot = plot;
-    }
-
-    public void OnInteract(PlayerMain main)
-    {
-        main.Money.GainMoney(SellValue);
-        _plot.FreePlot();
-
-        Destroy(gameObject);
     }
 }

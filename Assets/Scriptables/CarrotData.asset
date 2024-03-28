@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: CarrotData
   m_EditorClassIdentifier: 
   <Name>k__BackingField: Carrot
-  <GrowTime>k__BackingField: 5
-  <SellValue>k__BackingField: 25
-  <PlantPrefab>k__BackingField: {fileID: 0}
+  <GrowTime>k__BackingField: 10
+  <SellValue>k__BackingField: 15

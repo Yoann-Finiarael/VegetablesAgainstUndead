@@ -15,3 +15,6 @@ MonoBehaviour:
   <Name>k__BackingField: Cabbage
   <GrowTime>k__BackingField: 5
   <SellValue>k__BackingField: 8
+  <AttackDamage>k__BackingField: 1
+  <AttackRate>k__BackingField: 1
+  <AttackRange>k__BackingField: 1

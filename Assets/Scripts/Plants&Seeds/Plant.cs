@@ -17,11 +17,11 @@ public class Plant : MonoBehaviour, Interactable, IPoolable
     public bool InUse { get; private set; }
 
     // PlantStats
-    public string Name { get; private set; }
+    private string _name;
+    private float _growTime;
+    private int _sellValue;
 
-    public float GrowTime { get; private set; }
-
-    public int SellValue { get; private set; }
+    private PlantAttack _attack;
 
     private LandPlot _plot;
 
@@ -40,7 +40,7 @@ public class Plant : MonoBehaviour, Interactable, IPoolable
     /// <param name="main"></param>
     public void OnInteract(PlayerMain main)
     {
-        main.Money.GainMoney(SellValue);
+        main.Money.GainMoney(_sellValue);
         _plot.FreePlot();
 
         Unuse();
@@ -52,9 +52,9 @@ public class Plant : MonoBehaviour, Interactable, IPoolable
     /// <param name="position"></param>
     public void Use(Vector3 position)
     {
-        if (Name != _data.Name)
+        if (_attack == null)
         {
-            LoadData();
+            Init();
         }
 
         transform.position = position;
@@ -82,16 +82,26 @@ public class Plant : MonoBehaviour, Interactable, IPoolable
         return this.gameObject;
     }
 
+    private void Init()
+    {
+        _attack = transform.GetChild(0).GetComponent<PlantAttack>();
+        _attack.Init();
+
+        LoadData();
+    }
+
     /// <summary>
     /// Hydrates the prefab from the Scriptable's Data
     /// </summary>
     private void LoadData()
     {
-        Name = _data.Name;
-        GrowTime = _data.GrowTime;
-        SellValue = _data.SellValue;
+        _name = _data.Name;
+        _growTime = _data.GrowTime;
+        _sellValue = _data.SellValue;
 
-        InteractText = "Haverst " + Name;
+        InteractText = "Haverst " + _name;
+
+        _attack.LoadData(_data);
     }
 
     /// <summary>
@@ -103,7 +113,7 @@ public class Plant : MonoBehaviour, Interactable, IPoolable
         transform.localScale = Vector3.one * 0.4f;
         IsInteractable = false;
 
-        yield return new WaitForSeconds(GrowTime);
+        yield return new WaitForSeconds(_growTime);
 
         transform.localScale = Vector3.one;
         IsInteractable = true;

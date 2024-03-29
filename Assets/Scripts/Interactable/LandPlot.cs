@@ -1,18 +1,26 @@
 using UnityEngine;
 
+/// <summary>
+/// A plot of land where seed can be placed
+/// </summary>
 public class LandPlot : MonoBehaviour, Interactable
 {
-    [field: Header("Interactable")]
-    [field: SerializeField]
+    //Interactable
     public string InteractText { get; private set; }
 
-    [field: SerializeField]
     public bool IsInteractable { get; private set; }
 
     private Plant _plant;
 
     // Local use
     private SeedData _seedInHand;
+
+    // Start
+    private void Start()
+    {
+        InteractText = "Plant a seed";
+        IsInteractable = true;
+    }
 
     /// <summary>
     /// If the player has enough seeds in hand, plant the seed to make a plant
@@ -46,7 +54,7 @@ public class LandPlot : MonoBehaviour, Interactable
         _plant.SetPlot(this);
 
         // Give the position of the top of the land plot
-        _plant.Use(transform.GetChild(0).position);
+        _plant.Use(transform.GetChild(0).position, transform.GetChild(0).rotation);
     }
 
     /// <summary>

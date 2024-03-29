@@ -1,9 +1,17 @@
+using System;
 using UnityEngine;
 
+/// <summary>
+/// Manages the interactions of the Player
+/// </summary>
 public class PlayerInteract : MonoBehaviour
 {
     [SerializeField]
     private float _interactRange = 50f;
+
+    // Events
+    public event Action<string> BeginInteract;
+    public event Action EndInteract;
 
     // Main
     private PlayerMain _main;
@@ -11,6 +19,7 @@ public class PlayerInteract : MonoBehaviour
     // For Raycast
     private Camera _camera;
 
+    // Private
     private RaycastHit _hit;
     private LayerMask _layerInteractable;
 
@@ -88,7 +97,7 @@ public class PlayerInteract : MonoBehaviour
     /// </summary>
     private void InteractBegin()
     {
-        _main.UI.ShowInteract(_currentInteract.InteractText);
+        BeginInteract?.Invoke(_currentInteract.InteractText);
     }
 
     /// <summary>
@@ -96,6 +105,6 @@ public class PlayerInteract : MonoBehaviour
     /// </summary>
     private void InteractEnd()
     {
-        _main.UI.HideInteract();
+        EndInteract?.Invoke();
     }
 }

@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using UnityEngine;
 
@@ -13,7 +14,7 @@ public class Plant : MonoBehaviour, Interactable, IPoolable
 
     public bool IsInteractable { get; private set; }
 
-    //IPoolable
+    // IPoolable
     public bool InUse { get; private set; }
 
     // PlantStats
@@ -47,10 +48,10 @@ public class Plant : MonoBehaviour, Interactable, IPoolable
     }
 
     /// <summary>
-    /// Uses the plant
+    /// Uses the plant, making it grow
     /// </summary>
-    /// <param name="position"></param>
-    public void Use(Vector3 position)
+    /// <param name="position">the position where the plant will go</param>
+    public void Use(Vector3 position, Quaternion rotation)
     {
         if (_attack == null)
         {
@@ -58,17 +59,19 @@ public class Plant : MonoBehaviour, Interactable, IPoolable
         }
 
         transform.position = position;
+        transform.rotation = rotation;
         InUse = true;
 
         StartCoroutine(StartGrowth());
     }
 
     /// <summary>
-    /// Unuses the plant
+    /// Unuses the plant and have it on standby
     /// </summary>
     public void Unuse()
     {
         transform.position = ObjectPool.Instance.transform.position;
+        _attack.SetCanAttack(false);
 
         InUse = false;
     }
@@ -82,10 +85,15 @@ public class Plant : MonoBehaviour, Interactable, IPoolable
         return this.gameObject;
     }
 
+    /// <summary>
+    /// Initializes the Plant when it is used for the first time
+    /// </summary>
     private void Init()
     {
         _attack = transform.GetChild(0).GetComponent<PlantAttack>();
         _attack.Init();
+
+        _attack.Attack += PlantAttackAnim;
 
         LoadData();
     }
@@ -117,5 +125,22 @@ public class Plant : MonoBehaviour, Interactable, IPoolable
 
         transform.localScale = Vector3.one;
         IsInteractable = true;
+
+        _attack.SetCanAttack(true);
+    }
+
+    /// <summary>
+    /// Animates the plant when it attacks
+    /// </summary>
+    private void PlantAttackAnim()
+    {
+        DOTween.Sequence()
+            .Append(
+                transform.DOScaleY(0.8f, 0.2f)
+
+                )
+            .Append(
+                transform.DOScaleY(1f, 0.2f)
+                );
     }
 }

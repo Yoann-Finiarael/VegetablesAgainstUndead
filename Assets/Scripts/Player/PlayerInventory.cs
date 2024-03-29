@@ -1,13 +1,21 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manages the inventory of the Player
+/// </summary>
 public class PlayerInventory : MonoBehaviour
 {
     public List<InventorySlot> Inventory { get; private set; }
 
+    // Event
+    public event Action<InventorySlot> InventoryUpdate;
+
     // Main
     private PlayerMain _main;
 
+    // Private
     private int _currentIndex = 0;
 
     // Local Use
@@ -59,7 +67,7 @@ public class PlayerInventory : MonoBehaviour
             }
         }
 
-        _main.UI.UpdateInventory();
+        CallUpdateInventory();
     }
 
     /// <summary>
@@ -74,15 +82,13 @@ public class PlayerInventory : MonoBehaviour
         if (_searchIndex > -1)
         {
             Inventory[_searchIndex].IncreaseAmount();
-            Debug.Log($"{seed} : {Inventory[_searchIndex].Amount}");
         }
         else
         {
             Inventory.Add(new InventorySlot(seed, 1));
-            Debug.Log($"{seed} : {Inventory[0].Amount}");
         }
 
-        _main.UI.UpdateInventory();
+        CallUpdateInventory();
     }
 
     /// <summary>
@@ -126,7 +132,7 @@ public class PlayerInventory : MonoBehaviour
             }
         }
 
-        _main.UI.UpdateInventory();
+        CallUpdateInventory();
     }
 
     /// <summary>
@@ -145,5 +151,13 @@ public class PlayerInventory : MonoBehaviour
         }
 
         return -1;
+    }
+
+    /// <summary>
+    /// Invokes the event UpdateInventory
+    /// </summary>
+    private void CallUpdateInventory()
+    {
+        InventoryUpdate?.Invoke(GetCurrentSlot());
     }
 }

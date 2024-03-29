@@ -1,35 +1,17 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Manages the Inouts of the Player
+/// </summary>
 public class PlayerControl : MonoBehaviour
 {
-    [Header("Player Stats")]
-    [SerializeField]
-    private float _playerSpeed;
-
     // Main
     private PlayerMain _main;
 
-    // Movement
-    private Rigidbody _rb;
-
-    private Vector2 _direction;
-    private Vector3 _move;
-
-    // Start is called before the first frame update
     private void Start()
     {
         _main = GetComponent<PlayerMain>();
-        _rb = GetComponent<Rigidbody>();
-
-        _rb.drag = 0;
-    }
-
-    // Update is called once per frame
-    private void Update()
-    {
-        _move = (transform.forward * _direction.y + transform.right * _direction.x) * _playerSpeed;
-        _rb.velocity = _move;
     }
 
     /// <summary>
@@ -40,7 +22,7 @@ public class PlayerControl : MonoBehaviour
     {
         if (context.performed || context.canceled)
         {
-            _direction = context.ReadValue<Vector2>().normalized;
+            _main.Movement.ChangeDirection(context.ReadValue<Vector2>().normalized);
         }
     }
 
@@ -76,8 +58,6 @@ public class PlayerControl : MonoBehaviour
     {
         if (context.started)
         {
-            Debug.Log((int)context.ReadValue<Vector2>().normalized.y);
-
             // value is either 1 or -1;
             _main.Inventory.SwitchCurrentSlot((int)context.ReadValue<Vector2>().normalized.y);
         }

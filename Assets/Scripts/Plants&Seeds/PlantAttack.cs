@@ -1,19 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Manages the Attacking of a plant
+/// </summary>
 public class PlantAttack : MonoBehaviour
 {
+    // Events
+    public event Action Attack;
+
     // PlantAttackStats
     private int _attackDamage;
     private float _attackRate;
     private float _attackRange;
 
+    // Private use
     private SphereCollider _rangeCollider;
-    private List<GameObject> targets;
+    private List<Undead> targets;
     private Coroutine _coroutineAttackCycle;
 
+    private bool _canAttack = false;
     private bool _isAttacking = false;
+
+    // Attack Rate Comparator (inverses the attack speed)
+    private float _initRate = 2;
 
     /// <summary>
     /// Initializes PlantAttack the first time it is used
@@ -22,7 +34,7 @@ public class PlantAttack : MonoBehaviour
     {
         // Get the sphere collider in the child gameobject
         _rangeCollider = GetComponent<SphereCollider>();
-        targets = new List<GameObject>();
+        targets = new List<Undead>();
     }
 
     /// <summary>
@@ -38,13 +50,32 @@ public class PlantAttack : MonoBehaviour
         _rangeCollider.radius = _attackRange;
     }
 
+    /// <summary>
+    /// Sets if the plant can or not attack
+    /// </summary>
+    /// <param name="canAttack"></param>
+    public void SetCanAttack(bool canAttack)
+    {
+        _canAttack = canAttack;
+
+        if (targets.Count > 0)
+        {
+            StartAttacking();
+        }
+
+        if (!_canAttack)
+        {
+            StopAttacking();
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Undead"))
         {
-            targets.Add(other.gameObject);
+            targets.Add(other.gameObject.GetComponent<Undead>());
 
-            if (!_isAttacking)
+            if (_canAttack && !_isAttacking)
             {
                 StartAttacking();
             }
@@ -55,7 +86,7 @@ public class PlantAttack : MonoBehaviour
     {
         if (other.CompareTag("Undead"))
         {
-            targets.Remove(other.gameObject);
+            targets.Remove(other.gameObject.GetComponent<Undead>());
 
             if (targets.Count <= 0)
             {
@@ -79,7 +110,12 @@ public class PlantAttack : MonoBehaviour
     private void StopAttacking()
     {
         _isAttacking = false;
-        StopCoroutine(_coroutineAttackCycle);
+        if (_coroutineAttackCycle != null)
+        {
+            StopCoroutine(_coroutineAttackCycle);
+
+            _coroutineAttackCycle = null;
+        }
     }
 
     /// <summary>
@@ -88,11 +124,11 @@ public class PlantAttack : MonoBehaviour
     /// <returns></returns>
     private IEnumerator AttackCycle()
     {
-        //Infinite loop
+        // Infinite loop
         while (true)
         {
             AttackFirstTarget();
-            yield return new WaitForSeconds(_attackRate);
+            yield return new WaitForSeconds(_initRate / _attackRate);
         }
     }
 
@@ -101,7 +137,7 @@ public class PlantAttack : MonoBehaviour
     /// </summary>
     private void AttackFirstTarget()
     {
-        Debug.Log("I attack " + targets[0]);
+        targets[0].TakeDamage(_attackDamage);
+        Attack?.Invoke();
     }
-    
 }

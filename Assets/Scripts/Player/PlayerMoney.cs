@@ -1,5 +1,9 @@
+using System;
 using UnityEngine;
 
+/// <summary>
+/// Manages the Money of the Player
+/// </summary>
 public class PlayerMoney : MonoBehaviour
 {
     [SerializeField]
@@ -9,6 +13,9 @@ public class PlayerMoney : MonoBehaviour
     /// The player's current money
     /// </summary>
     public int Wallet { get; private set; }
+
+    // Event
+    public event Action<int> MoneyUpdate;
 
     // Main
     private PlayerMain _main;
@@ -31,7 +38,8 @@ public class PlayerMoney : MonoBehaviour
         if (amount > 0)
         {
             Wallet += amount;
-            _main.UI.UpdateMoney(Wallet);
+
+            MoneyUpdate?.Invoke(Wallet);
         }
     }
 
@@ -44,7 +52,8 @@ public class PlayerMoney : MonoBehaviour
         if (Wallet >= amount && amount > 0)
         {
             Wallet -= amount;
-            _main.UI.UpdateMoney(Wallet);
+
+            MoneyUpdate?.Invoke(Wallet);
         }
     }
 }

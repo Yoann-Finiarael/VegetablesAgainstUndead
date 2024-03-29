@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// Manages the Camera of the Player
+/// </summary>
 public class PlayerCamera : MonoBehaviour
 {
     [Header("Camera Stats")]
